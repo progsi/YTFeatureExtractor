@@ -14,6 +14,10 @@ def main():
 
     yt_ids = get_yt_ids(listfile)
 
+    extract(yt_ids, feat_keys, parallel)
+
+def extract(yt_ids, feat_keys, parallel=True):
+
     input_paths = [get_path(yt_id) for yt_id in yt_ids]
     output_paths = [to_output_path(input_path) for input_path in input_paths]
 
@@ -23,7 +27,6 @@ def main():
     else:
         for input_path, output_path in input_paths, output_paths:
             process_file(input_path, output_path, feat_keys)
-
 
 def get_yt_ids(input_path):
 
