@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-
+import scipy
 
 class PyCqt:
   """just wrapper for cqt extractor,

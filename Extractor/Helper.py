@@ -7,7 +7,7 @@ from Extractor.PyCQT import PyCqt
 from Extractor.SBBC import SBBC
 from Extractor.Download import download
 
-FEAT_KEYS = ["cqt_ch", "cqt_20", "cens", "onset_env", "melodia"]
+FEAT_KEYS = ["cqt_ch", "cqt_20", "cens", "onset_env", "melodia", "crepe"]
 
 
 def process_file(input_file, output_file, feat_keys, force=False):
@@ -70,10 +70,10 @@ def extract_feature(y, sr, mp3_path, feat_key: str, file_out, force: bool = Fals
             if feat_key not in ["melodia", "crepe"]:
                 feature = __extract(y, sr, feat_key)
             else:
-                feature = __extract_path(mp3_path)
+                feature = __extract_path(mp3_path, feat_key)
             file_out.create_dataset(feat_key, data=feature, compression='gzip')
         except Exception as e:
-            logging.error("Exception {e} for {feat_key}")
+            logging.error(f"Exception {e} for {feat_key}")
 
         print(f"Extracted {feat_key} feature")
 
@@ -83,9 +83,10 @@ def extract_feature(y, sr, mp3_path, feat_key: str, file_out, force: bool = Fals
 
 def __extract_path(mp3_path, feat_key):
 
-    if feat_key == "melodia":
-        extractor = SBBC()
-        return extractor(mp3_path)
+
+    extractor = SBBC(melodia_algo=feat_key)
+    return extractor(mp3_path)
+    
 
 
 def __extract(y, sr, feat_key: str):

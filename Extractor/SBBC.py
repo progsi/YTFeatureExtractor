@@ -1,6 +1,8 @@
 import essentia
 import essentia.standard
 import numpy as np
+from math import log2
+from collections import Counter
 
 
 class SBBC(object):
@@ -10,7 +12,9 @@ class SBBC(object):
     Args:
         object (_type_): _description_
     """
-    def __init__(self, melodia_algo=essentia.standard.PredominantPitchMelodia) -> None:
+    def __init__(self, melodia_algo: str, sr: int = 22050, hop_size: int =512) -> None:
+        self.sr = sr
+        self.hop_size = hop_size
         self.melodia_algo= melodia_algo
     
     def __call__(self, mp3_path):
@@ -19,12 +23,19 @@ class SBBC(object):
         return chroma_descriptor
         
     def _estimate_melody(self, mp3_path):
-        loader = essentia.standard.EasyLoader(filename=mp3_path, sampleRate=44100)
+        loader = essentia.standard.EasyLoader(filename=mp3_path, sampleRate=self.sr)
         audio = loader()
-        pitch_extractor = self.melodia_algo(frameSize=2048, hopSize=512)
+        pitch_extractor = self.melodia_algo(frameSize=self.sr, hopSize=self.hop_size)
         pitch_values, _ = pitch_extractor(audio)
         return pitch_values  
     
+    @staticmethod
+    def _get_melodia_algorithm(feat_key):
+        if feat_key == "melodia":
+            return essentia.standard.PredominantPitchMelodia
+        elif feat_key == "crepe":
+            raise NotImplementedError("CREPE not yet implemented!")
+
     @staticmethod
     def _compute_descriptor(melody):
         def to_cents(song):
