@@ -7,7 +7,7 @@ from Extractor.PyCQT import PyCqt
 from Extractor.SBBC import SBBC
 from Extractor.Download import download
 
-FEAT_KEYS = ["cqt_ch", "cqt_20", "cens", "onset_env", "melodia", "crepe"]
+FEAT_KEYS = ["cqt_ch", "cqt_20", "cens", "onset_env", "melodia"]
 
 
 def process_file(input_file, output_file, feat_keys, force=False):
