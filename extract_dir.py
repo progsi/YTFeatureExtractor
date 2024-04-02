@@ -37,7 +37,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Audio feature extractor from mp3 dir.')
     parser.add_argument('-i', '--input', type=str, default='/data/audio_data/',
                     help='Path with mp3s.')
-    parser.add_argument('--parallel', action="store_true", help='Path with audio features (output).')
+    parser.add_argument('--parallel', action="store_true", 
+                        help='Use multiple cores for extraction and downloads.')
     args = parser.parse_args()
     return args
     

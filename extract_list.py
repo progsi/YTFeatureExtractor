@@ -69,9 +69,9 @@ def parse_args():
     parser.add_argument('-i', '--input', type=str, default='/data/audio_data/',
                     help='Path with mp3s.')
     parser.add_argument('--parallel', action="store_true", 
-                        help='Path with audio features (output).')
+                        help='Use multiple cores for extraction and downloads.')
     parser.add_argument('--force', action="store_true", 
-                    help='Whether to force new feature extraction if file exists.')
+                    help='Force new feature extraction even if file exists.')
     args = parser.parse_args()
     return args
     
