@@ -1,4 +1,5 @@
 import essentia
+import essentia.standard
 import numpy as np
 
 

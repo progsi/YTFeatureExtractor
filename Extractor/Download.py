@@ -11,7 +11,7 @@ def download(yt_id: str, outpath: str):
     """
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': outpath,
+        'outtmpl': outpath.replace(".mp3", ""),
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -25,4 +25,4 @@ def download(yt_id: str, outpath: str):
     except yt_dlp.utils.YoutubeDLError:
 
         logging.error(f'{yt_id} could not be downloaded')
-
+        return False

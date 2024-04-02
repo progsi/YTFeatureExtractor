@@ -10,23 +10,25 @@ def main():
     args = parse_args()
     listfile = args.listfile
     parallel = args.parallel
+    input_dir = args.input
+    force = args.force
     feat_keys = FEAT_KEYS
 
     yt_ids = get_yt_ids(listfile)
 
-    extract(yt_ids, feat_keys, parallel)
+    extract(input_dir, yt_ids, feat_keys, parallel, force)
 
-def extract(yt_ids, feat_keys, parallel=True):
+def extract(input_dir, yt_ids, feat_keys, parallel, force):
 
-    input_paths = [get_path(yt_id) for yt_id in yt_ids]
+    input_paths = [get_path(input_dir, yt_id) for yt_id in yt_ids]
     output_paths = [to_output_path(input_path) for input_path in input_paths]
 
     if parallel:
         with Pool(cpu_count()) as p:
-            list(tqdm(p.imap(process_file, input_paths, output_paths, feat_keys), total=len(input_paths)))
+            list(tqdm(p.imap(process_file, input_paths, output_paths, feat_keys, force), total=len(input_paths)))
     else:
-        for input_path, output_path in input_paths, output_paths:
-            process_file(input_path, output_path, feat_keys)
+        for (input_path, output_path) in zip(input_paths, output_paths):
+            process_file(input_path, output_path, feat_keys, force)
 
 def get_yt_ids(input_path):
 
@@ -62,8 +64,14 @@ def parse_textfile(input_path):
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Audio feature extractor from mp3 dir.')
-    parser.add_argument('-l', '--listfile', type=str, help="Filepath to a list of YouTube IDs to extract from.")
-    parser.add_argument('--parallel', action="store_true", help='Path with audio features (output).')
+    parser.add_argument('-l', '--listfile', type=str, 
+                        help="Filepath to a list of YouTube IDs to extract from.")
+    parser.add_argument('-i', '--input', type=str, default='/data/audio_data/',
+                    help='Path with mp3s.')
+    parser.add_argument('--parallel', action="store_true", 
+                        help='Path with audio features (output).')
+    parser.add_argument('--force', action="store_true", 
+                    help='Whether to force new feature extraction if file exists.')
     args = parser.parse_args()
     return args
     

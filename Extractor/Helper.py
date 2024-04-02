@@ -13,22 +13,28 @@ FEAT_KEYS = ["cqt_ch", "cqt_20", "cens", "onset_env", "melodia"]
 def process_file(input_file, output_file, feat_keys, force=False):
     yt_id = os.path.basename(input_file).replace(".mp3", "")
 
-    print(f"Processing: {output_file}")
+    print(f"Processing: {yt_id}")
 
-    if not os.path.isfile(output_file):
-        download(yt_id, output_file)
-
+    if not os.path.isfile(input_file) or force:
+        try:
+            download(yt_id, input_file)
+            if not os.path.isfile(input_file):
+                logging.error(f"Video {yt_id} unavailable!")
+                return False
+        except Exception as e:
+            logging.exception(f"Video {yt_id} could not be downloaded!", str(e))
+            return False
     try:
         y, sr = librosa.load(input_file, sr=22050)
-    except:
-        logging.error(f"Audio file error for {yt_id}")
-        return
+    except Exception as e:
+        logging.exception(f"MP3 {yt_id}.mp3 could not be loaded with Librosa!", str(e))
+        return False
     
     try:
         with h5py.File(output_file, "a") as file_out:
             
             for feat_key in feat_keys:
-                extract_feature(y, sr, input_file, feat_key, file_out)
+                extract_feature(y, sr, input_file, feat_key, file_out, force)
     except:
         logging.error(f"HDF file error {yt_id}")
 
@@ -69,8 +75,10 @@ def extract_feature(y, sr, mp3_path, feat_key: str, file_out, force: bool = Fals
         except Exception as e:
             logging.error("Exception {e} for {feat_key}")
 
+        print(f"Extracted {feat_key} feature")
 
-        print(f"Extracted {feat_key} feature")      
+    else:
+        print(f"{feat_key} feature already in file.")
 
 
 def __extract_path(mp3_path, feat_key):
