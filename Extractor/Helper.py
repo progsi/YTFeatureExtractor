@@ -27,6 +27,7 @@ def process_file(input_file: str, output_file: str, feat_keys: List[str], force=
 
     print(f"Processing: {yt_id}")
 
+    # if mp3 file not on disk, download it
     if not os.path.isfile(input_file) or force:
         try:
             download(yt_id, input_file)
@@ -36,12 +37,15 @@ def process_file(input_file: str, output_file: str, feat_keys: List[str], force=
         except Exception as e:
             logging.exception(f"Video {yt_id} could not be downloaded!", str(e))
             return False
+    
+    # load mp3
     try:
         y, sr = librosa.load(input_file, sr=22050)
     except Exception as e:
         logging.exception(f"MP3 {yt_id}.mp3 could not be loaded with Librosa!", str(e))
         return False
     
+    # extract features
     try:
         with h5py.File(output_file, "a") as file_out:
             
