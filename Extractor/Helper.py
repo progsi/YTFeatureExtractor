@@ -6,11 +6,23 @@ import numpy as np
 from Extractor.PyCQT import PyCqt
 from Extractor.SBBC import SBBC
 from Extractor.Download import download
+from typing import List
 
 FEAT_KEYS = ["cqt_ch", "cqt_20", "cens", "onset_env", "melodia"]
 
 
-def process_file(input_file, output_file, feat_keys, force=False):
+def process_file(input_file: str, output_file: str, feat_keys: List[str], force=False):
+    """Get features for audio file at input_file path and write into output file. If the input_file is not
+    on disk, it gets downloaded and extracted afterwards.
+    Args:
+        input_file (str): input file path (mp3)
+        output_file (str): output file path with extracted features (h5)
+        feat_keys (List[str]): feature type keys (eg. cqt_20, cqt_ch)
+        force (bool, optional): Whether to force redownload. Defaults to False.
+
+    Returns:
+        bool: successful extraction
+    """
     yt_id = os.path.basename(input_file).replace(".mp3", "")
 
     print(f"Processing: {yt_id}")
@@ -39,9 +51,16 @@ def process_file(input_file, output_file, feat_keys, force=False):
         logging.error(f"HDF file error {yt_id}")
 
 
-def extract_cqt_20(y, sr=22050):
+def extract_cqt_20(y: np.array, sr: int = 22_050):
+    """Extract cqt features as used in CQTNet.
+    Args:
+        y (np.array): Audio signal waveform
+        sr (int, optional): Sampling rate. Defaults to 22_050.
+    Returns:
+        np.array: cqt spectogram of type cqt_20
+    """
 
-    def downsampling(cqt, mean_size=20):
+    def downsampling(cqt: np.array, mean_size: int = 20):
         cqt = np.abs(cqt)
         height, length = cqt.shape
         new_cqt = np.zeros((height, int(length / mean_size)), dtype=np.float64)
@@ -51,15 +70,30 @@ def extract_cqt_20(y, sr=22050):
     return downsampling(librosa.cqt(y=y, sr=sr))
 
 
-def extract_cqt_ch(y, sr: int = 16000, hop_size=0.04):
+def extract_cqt_ch(y: np.array, sr: int = 16_000, hop_size: float = 0.04):
+    """Extract cqt features as used by CoverHunter.
+    Args:
+        y (np.array): Audio signal waveform
+        sr (int, optional): Sampling rate. Defaults to 16_000.
+        hop_size (float, optional): Hop size. Defaults to 0.04.
+    Returns:
+        bool: cqt spectogram of type cqt_ch
+    """
     y = y / max(0.001, np.max(np.abs(y))) * 0.999
     py_cqt = PyCqt(sample_rate=sr, hop_size=hop_size)
     cqt = py_cqt.compute_cqt(signal_float=y, feat_dim_first=False)
     return cqt
 
-def extract_feature(y, sr, mp3_path, feat_key: str, file_out, force: bool = False):
-
-
+def extract_feature(y: np.array, sr: int, mp3_path: str, feat_key: str, file_out: str, force: bool = False):
+    """_summary_
+    Args:
+        y (np.array): audio signal waveform
+        sr (int): sampling rate
+        mp3_path (str): path to mp3
+        feat_key (str): feature type key (eg. cqt_20, cqt_ch,...)
+        file_out (str): output filepath
+        force (bool, optional): Whether to force redownload. Defaults to False.
+    """
     if force and feat_key in file_out.keys():
         del file_out[feat_key]
         print(f"Deleted {feat_key}")
@@ -80,17 +114,26 @@ def extract_feature(y, sr, mp3_path, feat_key: str, file_out, force: bool = Fals
     else:
         print(f"{feat_key} feature already in file.")
 
-
-def __extract_path(mp3_path, feat_key):
-
-
+def __extract_path(mp3_path: str, feat_key: List[str]):
+    """Extract SBBC features.
+    Args:
+        mp3_path (str): mp3 file path
+        feat_key (List[str]): list of feature keys
+    Returns:
+        np.array: Extracted features.
+    """
     extractor = SBBC(melodia_algo=feat_key)
     return extractor(mp3_path)
-    
 
-
-def __extract(y, sr, feat_key: str):
-
+def __extract(y: np.array, sr: int, feat_key: str):
+    """_summary_
+    Args:
+        y (np.array): audio signal waveform
+        sr (int): sampling rate
+        feat_key (str): feature type key
+    Returns:
+        np.array: extracted features
+    """
     if feat_key == "cqt_20":
         return extract_cqt_20(y)
     elif feat_key == "cqt_ch":

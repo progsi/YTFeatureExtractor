@@ -4,10 +4,12 @@ import yt_dlp
 
 
 def download(yt_id: str, outpath: str):
-    """
-    downloads the YouTube video with the defined ID as mp3
-    :param yt_id: YouTube ID to download video for
-    :return:
+    """Downloads video identified by yt_id into output path.
+    Args:
+        yt_id (str): youtube identifier
+        outpath (str): output path
+    Returns:
+        bool: flag indicating successful download
     """
     ydl_opts = {
         'format': 'bestaudio/best',
