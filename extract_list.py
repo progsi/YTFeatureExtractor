@@ -57,7 +57,7 @@ def get_yt_ids(input_path: str):
     return list(set(yt_ids))
 
 def get_path(base_dir: str, yt_id: str, extension: str = ".mp3"):
-    return os.path.join(base_dir, str(ord(yt_id[0])), yt_id + extension)
+    return os.path.join(base_dir, yt_id[:2], yt_id + extension)
 
 def to_output_path(input_path: str):
     """Transform input to output path.
