@@ -1,5 +1,5 @@
 # Specify Python version
-python_version >= "3.8"
+python>=3.8
 
 # Required packages
 yt-dlp==2024.3.10
