@@ -3,9 +3,9 @@ import os
 import logging
 import librosa
 import numpy as np
-from Extractor.PyCQT import PyCqt
-from Extractor.SBBC import SBBC
-from Extractor.Download import download
+from YTFeatureExtractor.PyCQT import PyCqt
+from YTFeatureExtractor.SBBC import SBBC
+from YTFeatureExtractor.Download import download
 from typing import List
 
 FEAT_KEYS = ["cqt_ch", "cqt_20", "cens", "onset_env", "melodia"]

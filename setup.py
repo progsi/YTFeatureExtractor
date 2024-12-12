@@ -1,22 +1,29 @@
 from setuptools import setup, find_packages
 
-# Read the requirements from the requirements.txt file
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
+# Read the requirements.txt file
+def parse_requirements():
+    with open("requirements.txt", "r") as f:
+        return [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
+# Define setup
 setup(
-    name='YTFeatureExtractor',
-    version='0.1.0',
+    name="ytfeatextract",
+    version="0.1.0",
+    description="A feature extraction tool for YouTube videos.",
+    author="Simon Hachmeier",  # Replace with your name
+    author_email="simon.hachmeier@hu-berlin.de",  # Replace with your email
+    url="https://github.com/progsi/ytfeatextract",  # Replace with your GitHub URL
     packages=find_packages(),
-    install_requires=requirements,
-    author='Simon Hachmeier',
-    author_email='simon.hachmeier@hu-berlin.de',
-    description='A package for extracting features from YouTube videos',
-    url='https://github.com/progsi/YTFeatureExtractor',
+    python_requires=">=3.8",
+    install_requires=parse_requirements(),
     classifiers=[
-        'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",  # Update if using a different license
+        "Operating System :: OS Independent",
     ],
-    python_requires='>=3.8',
+    entry_points={
+        "console_scripts": [
+            "ytfeatextract=ytfeatextract.main:main",  # Replace with your package's entry point
+        ]
+    },
 )
