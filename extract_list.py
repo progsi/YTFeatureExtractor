@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
-from Extractor.Helper import process_file, FEAT_KEYS
+from YTFeatureExtractor.Helper import process_file, FEAT_KEYS
 from typing import List
 
 

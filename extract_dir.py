@@ -3,7 +3,7 @@ from tqdm import tqdm
 import argparse
 import numpy as np
 from multiprocessing import Pool, cpu_count
-from Extractor.Helper import process_file, FEAT_KEYS
+from YTFeatureExtractor.Helper import process_file, FEAT_KEYS
 
 
 def main():

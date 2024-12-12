@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import os
+import subprocess
 
 def parse_env_file(env_file):
     with open(env_file, 'r') as file:
@@ -13,6 +14,8 @@ def parse_env_file(env_file):
 env_file = 'env.yml'
 if os.path.exists(env_file):
     install_requires = parse_env_file(env_file)
+    # Install the conda environment
+    subprocess.run(['conda', 'env', 'create', '-f', env_file], check=True)
 else:
     install_requires = []
 
