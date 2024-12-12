@@ -1,32 +1,17 @@
 from setuptools import setup, find_packages
-import os
-import subprocess
 
-def parse_env_file(env_file):
-    with open(env_file, 'r') as file:
-        lines = file.readlines()
-    dependencies = []
-    for line in lines:
-        if line.startswith('- '):
-            dependencies.append(line[2:].strip())
-    return dependencies
-
-env_file = 'env.yml'
-if os.path.exists(env_file):
-    install_requires = parse_env_file(env_file)
-    # Install the conda environment
-    subprocess.run(['conda', 'env', 'create', '-f', env_file], check=True)
-else:
-    install_requires = []
+# Read the requirements from the requirements.txt file
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 setup(
     name='YTFeatureExtractor',
-    version='0.1',
+    version='0.1.0',
     packages=find_packages(),
-    install_requires=install_requires,
+    install_requires=requirements,
     author='Simon Hachmeier',
     author_email='simon.hachmeier@hu-berlin.de',
-    description='A feature extractor for YouTube videos',
+    description='A package for extracting features from YouTube videos',
     url='https://github.com/progsi/YTFeatureExtractor',
     classifiers=[
         'Programming Language :: Python :: 3',
